@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .bg-caesar-burgundy { background-color: #6D001A; }
+        .text-caesar-burgundy { color: #6D001A; }
+        body { font-family: 'Inter', sans-serif; } /* Swiss-style clean font */
+    </style>
+</head>
+<body class="bg-white text-black">
+
+    <nav class="p-6 border-b-4 border-black flex justify-between items-center">
+        <h1 class="text-3xl font-black uppercase tracking-tighter">Sanaa<span class="text-caesar-burgundy">Sync</span></h1>
+        <div class="space-x-6 font-bold uppercase text-sm">
+            <a href="/admin" class="hover:text-caesar-burgundy">Admin Portal</a>
+            <a href="#" class="bg-black text-white px-4 py-2">Join the Hub</a>
+        </div>
+    </nav>
+
+    <header class="bg-caesar-burgundy text-white p-12 lg:p-24">
+        <h2 class="text-6xl font-bold mb-4 tracking-tight">Project Caesar</h2>
+        <p class="text-xl max-w-2xl opacity-90">Digitizing the Swahilipot Hub Creative Ecosystem. From talent discovery to seamless resource booking.</p>
+    </header>
+
+    <main class="p-8">
+        <h3 class="text-2xl font-bold mb-8 uppercase border-l-8 border-black pl-4">Vetted Creatives</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for artist in artists %}
+            <div class="border-2 border-black p-6 hover:shadow-[8px_8px_0px_0px_rgba(109,0,26,1)] transition-all">
+                <h4 class="text-xl font-bold uppercase">{{ artist.username }}</h4>
+                <p class="text-sm text-gray-600 mb-4">{{ artist.bio|truncatewords:15 }}</p>
+                
+                <div class="flex flex-wrap gap-2">
+                    {% for skill in artist.skills.all %}
+                        <span class="px-2 py-1 text-xs font-bold uppercase {% if skill.priority == 'primary' %}bg-black text-white{% else %}border border-black{% endif %}">
+                            {{ skill.category.name }}
+                        </span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% empty %}
+            <p>No vetted artists found yet. Add some in the Admin!</p>
+            {% endfor %}
+        </div>
+    </main>
+
+</body>
+</html>
