@@ -160,6 +160,65 @@
     </header>
 
     <main class="py-32 px-8 max-w-7xl mx-auto" style="background-color: #000; padding: 100px 20px; color: #fff; font-family: 'Inter', sans-serif;">
+    
+    <!-- SUCCESS STORIES SECTION -->
+    <div class="relative mb-24">
+        <h3 class="text-8xl font-black tracking-tighter uppercase leading-[0.8] opacity-5 absolute -top-10 -left-10 select-none">
+            SUCCESS<br>STORIES
+        </h3>
+        
+        <div style="max-width: 1200px; margin: 0 auto; margin-bottom: 60px;">
+            <div style="border-left: 4px solid #007bff; padding-left: 25px; margin-bottom: 60px;">
+                <h2 style="font-size: 2.5rem; font-weight: 800; text-transform: uppercase; margin: 0; letter-spacing: -1px;">
+                    Artist Spotlights
+                </h2>
+                <p style="color: #666; font-size: 1.1rem; margin-top: 10px; max-width: 600px;">
+                    Celebrating the extraordinary achievements of our creative community.
+                </p>
+            </div>
+
+            {% if success_stories %}
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px;">
+                {% for story in success_stories %}
+                <div style="background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%); border: 1.5px solid #007bff; border-radius: 12px; overflow: hidden; transition: 0.3s; position: relative;" 
+                     onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='#ff006e';" 
+                     onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='#007bff';">
+                    
+                    {% if story.image %}
+                    <div style="width: 100%; height: 250px; overflow: hidden; background: #000;">
+                        <img src="{{ story.image.url }}" alt="{{ story.artist_name }}" style="width: 100%; height: 100%; object-fit: cover; transition: 0.3s;">
+                    </div>
+                    {% endif %}
+                    
+                    <div style="padding: 25px;">
+                        <span style="font-size: 0.65rem; font-weight: 900; color: #ff006e; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 10px;">
+                            Featured Story
+                        </span>
+                        
+                        <h3 style="font-size: 1.4rem; font-weight: 700; margin: 0 0 15px 0; color: #fff; line-height: 1.3;">
+                            {{ story.artist_name }}
+                        </h3>
+                        
+                        <p style="color: #aaa; font-size: 0.95rem; line-height: 1.6; margin: 0 0 20px 0; min-height: 60px;">
+                            {{ story.story|truncatewords:30 }}
+                        </p>
+                        
+                        <div style="border-top: 1px solid #333; padding-top: 15px; font-size: 0.75rem; color: #666;">
+                            {{ story.created_at|date:"M d, Y" }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div style="grid-column: 1 / -1; text-align: center; padding: 80px; border: 1px dashed #222; border-radius: 12px; background: #111;">
+                <p style="color: #444; font-weight: 600; font-size: 1.1rem;">More success stories coming soon...</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- TALENT DIRECTORY SECTION -->
     <div class="relative mb-24">
         <h3 class="text-8xl font-black tracking-tighter uppercase leading-[0.8] opacity-5 absolute -top-10 -left-10 select-none">
             TALENT<br>DIRECTORY

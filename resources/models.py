@@ -88,3 +88,19 @@ class GigApplication(models.Model):
 
     def __str__(self):
         return f"{self.artist.username} -> {self.gig.title}"
+
+
+class SuccessStory(models.Model):
+    """Success stories showcasing artist achievements"""
+    artist_name = models.CharField(max_length=200, help_text="Name of the artist")
+    story = models.TextField(help_text="The success story text")
+    image = models.ImageField(upload_to='success_stories/', help_text="Artist image or story image")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_featured = models.BooleanField(default=True, help_text="Show on landing page")
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.artist_name} - Success Story"

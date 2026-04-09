@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import User
 from .forms import HubSignUpForm, UserUpdateForm
-from resources.models import GigApplication
+from resources.models import GigApplication, SuccessStory
 
 @login_required
 def profile_view(request):
@@ -28,9 +28,11 @@ def edit_profile(request):
 # --- 1. The Landing Page (The "Artist Showcase") ---
 def landing_page(request):
     vetted_artists = User.objects.filter(role='creative', is_vetted=True).prefetch_related('skills')
+    success_stories = SuccessStory.objects.filter(is_featured=True)[:6]  # Show 6 featured stories
     
     context = {
         'artists': vetted_artists,
+        'success_stories': success_stories,
         'page_title': "Sanaa-Sync | Creative Directory"
     }
     return render(request, 'accounts/landing.html', context)
