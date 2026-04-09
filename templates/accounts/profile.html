@@ -53,9 +53,9 @@
                     </div>
                     
                     <div>
-                        {% if app.status == 'approved' %}
-                            <span style="color: #28a745; font-weight: 800; font-size: 0.8rem; text-transform: uppercase;">Accepted</span>
-                        {% elif app.status == 'rejected' %}
+                        {% if app.status == 'accepted' or app.status == 'approved' %}
+                            <span style="color: #28a745; font-weight: 800; font-size: 0.8rem; text-transform: uppercase;">Approved</span>
+                        {% elif app.status == 'declined' or app.status == 'rejected' %}
                             <span style="color: #dc3545; font-weight: 800; font-size: 0.8rem; text-transform: uppercase;">Declined</span>
                         {% else %}
                             <span style="color: #ffc107; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; border: 1px dashed #444; padding: 4px 10px; border-radius: 4px;">In Review</span>
