@@ -211,6 +211,11 @@
                         <div style="border-top: 1px solid #333; padding-top: 15px; font-size: 0.75rem; color: #666;">
                             {{ story.created_at|date:"M d, Y" }}
                         </div>
+                        <div style="margin-top: 18px;">
+                            <a href="{% url 'story_detail' story.id %}" target="_blank" style="display: inline-block; text-decoration: none; background: #0C6FBD; color: white; padding: 10px 18px; border-radius: 999px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; transition: background 0.2s;">
+                                Read More
+                            </a>
+                        </div>
                     </div>
                 </div>
                 {% endfor %}

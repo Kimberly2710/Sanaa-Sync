@@ -37,7 +37,12 @@ def landing_page(request):
     }
     return render(request, 'accounts/landing.html', context)
 
-# --- 2. The Signup Logic (The "Join the Hub" Action) ---
+# --- 2. The Success Story Detail Page ---
+def story_detail(request, story_id):
+    story = get_object_or_404(SuccessStory, pk=story_id)
+    return render(request, 'accounts/story_detail.html', {'story': story, 'page_title': f"{story.artist_name} | Story Detail"})
+
+# --- 3. The Signup Logic (The "Join the Hub" Action) ---
 def signup(request):
     if request.method == 'POST':
         form = HubSignUpForm(request.POST)
