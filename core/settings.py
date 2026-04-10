@@ -10,6 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+
+import pymysql
+
+pymysql.version_info = (2, 2, 1, 'final', 0)
+pymysql.install_as_MySQLdb()
+
+
 from pathlib import Path
 import pymysql
 from django.db.backends.base.base import BaseDatabaseWrapper
@@ -33,6 +40,35 @@ from django.db.backends.base.base import BaseDatabaseWrapper
 # 1. Existing pymysql trick
 pymysql.version_info = (2, 2, 1, 'final', 0)
 pymysql.install_as_MySQLdb()
+
+# 2. THE NEW TRICK: Kill the version check
+# We are literally replacing Django's "check" function with one that does nothing.
+def stub_check_version(*args, **kwargs):
+    return
+
+BaseDatabaseWrapper.check_database_version_supported = stub_check_version
+
+import pymysql
+from django.db.backends.base.base import BaseDatabaseWrapper
+
+# 1. Existing pymysql trick
+pymysql.version_info = (2, 2, 1, 'final', 0)
+pymysql.install_as_MySQLdb()
+import pymysql
+from django.db.backends.base.base import BaseDatabaseWrapper
+from django.db.backends.mysql.features import DatabaseFeatures
+
+# 1. Existing pymysql trick
+pymysql.version_info = (2, 2, 1, 'final', 0)
+pymysql.install_as_MySQLdb()
+
+# 2. Bypass Version Check
+BaseDatabaseWrapper.check_database_version_supported = lambda *args, **kwargs: None
+
+# 3. FIX FOR MARIADB 10.4 (The "RETURNING" Error)
+# This forces Django to use older, compatible SQL syntax
+DatabaseFeatures.can_return_columns_from_insert = property(lambda *args: False)
+DatabaseFeatures.can_return_rows_from_bulk_insert = property(lambda *args: False)
 
 # 2. THE NEW TRICK: Kill the version check
 # We are literally replacing Django's "check" function with one that does nothing.
@@ -154,4 +190,5 @@ USE_TZ = True
 STATIC_URL = 'static/'
 AUTH_USER_MODEL = 'accounts.User'
 
+LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'profile' # This matches the 'name' in accounts/urls.py

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Sanaa-Sync | My Bookings{% endblock %}
+
+{% block content %}
+<div style="background: #0a0a0a; min-height: 100vh; padding: 60px 20px; color: white;">
+    <div style="max-width: 900px; margin: 0 auto;">
+
+        <header style="margin-bottom: 40px;">
+            <h1 style="font-size: 2rem; font-weight: 800; letter-spacing: -1px; margin: 0;">MY BOOKED EQUIPMENT</h1>
+            <p style="color: #666; margin-top: 5px;">Track your resource requests and approvals</p>
+        </header>
+
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+            {% for booking in bookings %}
+            <div
+                style="background: #161616; border: 1px solid #222; border-radius: 12px; padding: 25px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; border-left: 5px solid 
+                {% if booking.status == 'approved' %}#00a84e{% elif booking.status == 'pending' %}#ffc107{% else %}#ff4c4c{% endif %};">
+
+                <div>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                        <h3 style="margin: 0; font-size: 1.3rem; color: #fff;">{{ booking.resource.name }}</h3>
+                        <span
+                            style="background: #333; color: #aaa; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; text-transform: uppercase;">
+                            {{ booking.resource.get_resource_type_display }}
+                        </span>
+                    </div>
+
+                    <div style="color: #888; font-size: 0.9rem; display: flex; gap: 20px;">
+                        <span>📅 {{ booking.start_time|date:"F j, Y" }}</span>
+                        <span>⏰ {{ booking.start_time|time:"H:i" }} - {{ booking.end_time|time:"H:i" }}</span>
+                    </div>
+                </div>
+
+                <div style="text-align: right;">
+                    <div
+                        style="font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;
+                        color: {% if booking.status == 'approved' %}#00a84e{% elif booking.status == 'pending' %}#ffc107{% else %}#ff4c4c{% endif %};">
+                        {{ booking.status }}
+                    </div>
+                    <p style="color: #444; font-size: 0.75rem; margin-top: 5px;">Ref: #SYNC-{{ booking.id }}</p>
+                </div>
+            </div>
+            {% empty %}
+            <div
+                style="text-align: center; padding: 100px 20px; background: #111; border: 2px dashed #222; border-radius: 12px;">
+                <p style="color: #555; font-size: 1.1rem;">You haven't booked any equipment yet.</p>
+                <a href="{% url 'resource_list' %}"
+                    style="color: #007bff; text-decoration: none; font-weight: 600; margin-top: 10px; display: inline-block;">Browse
+                    Resources →</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<style>
+    div[style*="background: #161616"]:hover {
+        background: #1c1c1c !important;
+        border-color: #444 !important;
+        transform: scale(1.01);
+    }
+</style>
+{% endblock %}
