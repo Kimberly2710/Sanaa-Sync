@@ -50,6 +50,10 @@
             border-color: #0C6FBD;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         .nav-link-custom {
             font-size: 11px;
             font-weight: 800;
@@ -119,6 +123,7 @@
         
         <div class="flex items-center gap-6">
             <a href="{% url 'gig_list' %}" class="nav-link-custom hover:text-[#0C6FBD]">Gigs</a>
+            <a href="#success-stories" class="nav-link-custom hover:text-[#0C6FBD]">Artist Milestones</a>
             
             {% if user.is_authenticated %}
                 <a href="{% url 'profile' %}" class="nav-link-custom hover:text-[#0C6FBD]">My Profile</a>
@@ -162,7 +167,7 @@
     <main class="py-32 px-8 max-w-7xl mx-auto" style="background-color: #000; padding: 100px 20px; color: #fff; font-family: 'Inter', sans-serif;">
     
     <!-- SUCCESS STORIES SECTION -->
-    <div class="relative mb-24">
+    <div id="success-stories" class="relative mb-24 scroll-mt-20">
         <h3 class="text-8xl font-black tracking-tighter uppercase leading-[0.8] opacity-5 absolute -top-10 -left-10 select-none">
             SUCCESS<br>STORIES
         </h3>
