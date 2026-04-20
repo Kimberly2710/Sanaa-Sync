@@ -8,14 +8,39 @@ from .forms import BookingForm, GigApplicationForm
 # --- GALLERY VIEWS FOR NAVBAR ---
 
 def equipment_list(request):
-    """View only gear and instruments"""
+    """View only gear and instruments with search/filter"""
     resources = Resource.objects.filter(resource_type__in=['gear', 'instrument'], status='available')
-    return render(request, 'resources/resource_list.html', {'resources': resources, 'title': 'Equipment & Gear'})
+    
+    search_query = request.GET.get('q', '').strip()
+    category_filter = request.GET.get('category', '').strip()
+    
+    if category_filter:
+        resources = resources.filter(resource_type=category_filter)
+    
+    if search_query:
+        resources = resources.filter(name__icontains=search_query) | resources.filter(description__icontains=search_query)
+    
+    return render(request, 'resources/resource_list.html', {
+        'resources': resources, 
+        'title': 'Equipment & Gear',
+        'search_query': search_query,
+        'category_filter': category_filter
+    })
 
 def halls_list(request):
-    """View only spaces/halls"""
+    """View only spaces/halls with search"""
     resources = Resource.objects.filter(resource_type='hall', status='available')
-    return render(request, 'resources/resource_list.html', {'resources': resources, 'title': 'Halls & Spaces'})
+    
+    search_query = request.GET.get('q', '').strip()
+    
+    if search_query:
+        resources = resources.filter(name__icontains=search_query) | resources.filter(description__icontains=search_query)
+    
+    return render(request, 'resources/resource_list.html', {
+        'resources': resources, 
+        'title': 'Halls & Spaces',
+        'search_query': search_query
+    })
 
 # --- MULTI-ITEM BOOKING LOGIC ---
 
