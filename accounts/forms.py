@@ -9,8 +9,14 @@ class HubSignUpForm(UserCreationForm):
         fields = ("username", "email", "first_name", "last_name", "phone_number")
 
 
-# ADD THIS CLASS BELOW:
 class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ("first_name", "last_name", "email", "phone_number")     
+        fields = ("first_name", "last_name", "email", "phone_number", "bio")
+        widgets = {
+            'bio': forms.Textarea(attrs={
+                'placeholder': 'Tell us about your creative journey, skills, and links to your portfolio...',
+                'rows': 5,
+                'class': 'modern-input' # Use your dark UI styles here
+            }),
+        }

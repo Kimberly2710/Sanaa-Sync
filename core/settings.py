@@ -107,7 +107,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 AUTH_USER_MODEL = 'accounts.User'
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'profile'
+LOGIN_REDIRECT_URL = 'profile_view'
+LOGOUT_REDIRECT_URL = 'landing_page'
 
 
 

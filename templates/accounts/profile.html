@@ -27,6 +27,13 @@
                     {% else %}
                         <span style="background: rgba(255, 193, 7, 0.1); color: #ffc107; padding: 5px 12px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; border: 1px solid #ffc107;">PROVISIONAL</span>
                     {% endif %}
+                    {% if not user.is_vetted %}
+<div class="modern-dark-card card-pink p-6 mb-10 border-dashed">
+    <h4 class="text-[#ff006e] font-black uppercase text-xs tracking-widest mb-2">Action Required: Onboarding</h4>
+    <p class="text-zinc-400 text-sm mb-4">To unlock Equipment and Hall bookings, you must complete your artist profile and submit it for vetting.</p>
+    <a href="{% url 'edit_profile' %}" class="pill-button bg-[#ff006e] hover:bg-[#d0005a]">Complete My Portfolio</a>
+</div>
+{% endif %}
                 </div>
 
                 <div style="border-top: 1px solid #222; padding-top: 20px; margin-bottom: 30px;">

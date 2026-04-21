@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Sanaa-Sync | Hub{% endblock %}</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
             --sph-blue: #007bff; /* Swahilipot Primary Blue */
@@ -104,6 +105,38 @@
             transition: 0.3s;
         }
         .btn-sph:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        footer {
+            background: #000;
+            padding: 40px 5%;
+            border-top: 1px solid #222;
+            text-align: center;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+
+        .social-links a {
+            color: var(--sph-text-muted);
+            font-size: 1.5rem;
+            transition: 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--sph-blue);
+            transform: translateY(-3px);
+        }
+
+        .footer-text {
+            font-size: 0.75rem;
+            color: var(--sph-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
     </style>
 </head>
 <body>
@@ -129,14 +162,22 @@
             <a href="{% url 'master_booking' %}" style="color: var(--sph-blue);">Book Now</a>
             
             {% if user.is_authenticated %}
-                <a href="{% url 'profile' %}">My Profile</a>
+                <a href="{% url 'profile_view' %}">My Profile</a>
                 <a href="{% url 'my_bookings' %}">My Bookings</a>
                 
                 {% if user.is_staff %}
                     <a href="/admin/" style="color: var(--sph-orange);">Admin Portal</a>
                 {% endif %}
 
-                <span style="color: var(--sph-text-muted); margin-left: 15px; font-size: 0.85rem;">Mambo, {{ user.username }}</span>
+                <span style="color: var(--sph-text-muted); margin-left: 15px; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 5px;">
+    Niaje, {{ user.username }}
+    {% if user.is_vetted %}
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="filter: drop-shadow(0 0 2px rgba(0, 123, 255, 0.5));">
+        <path d="M12 2L15.09 5.26L19.47 5.9L18.18 10.12L21 13.5L18.18 16.88L19.47 21.1L15.09 21.74L12 25L8.91 21.74L4.53 21.1L5.82 16.88L3 13.5L5.82 10.12L4.53 5.9L8.91 5.26L12 2Z" fill="var(--sph-blue)"/>
+        <path d="M9 12L11 14L15 10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    {% endif %}
+</span>
                 
                 <form action="{% url 'logout' %}" method="post" style="display: inline;">
                     {% csrf_token %}
@@ -155,5 +196,15 @@
         {% block content %}
         {% endblock %}
     </main>
+
+    <footer>
+        <div class="social-links">
+            <a href="https://www.facebook.com/Swahilipothub" target="_blank"><i class="fab fa-facebook"></i></a>
+            <a href="https://x.com/swahilipothub" target="_blank"><i class="fab fa-x-twitter"></i></a>
+            <a href="https://www.instagram.com/swahilipothub/" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.youtube.com/@swahilipothubfoundation" target="_blank"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p class="footer-text">Swahilipot Hub • Creative Technologist Division</p>
+    </footer>
 </body>
 </html>

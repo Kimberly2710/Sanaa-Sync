@@ -8,9 +8,14 @@ from resources.models import GigApplication, SuccessStory, Resource
 
 @login_required
 def profile_view(request):
-    # Fixed: changed 'created_at' to 'applied_on' to match your model
+    # Added vetting status context to help the profile page show the right badge
     my_applications = GigApplication.objects.filter(artist=request.user).select_related('gig').order_by('-applied_on')
-    return render(request, 'accounts/profile.html', {'applications': my_applications})
+    
+    context = {
+        'applications': my_applications,
+        'is_vetted': request.user.is_vetted, # Explicitly passing this for the badge logic
+    }
+    return render(request, 'accounts/profile.html', context)
 
 @login_required
 def edit_profile(request):
@@ -27,14 +32,14 @@ def edit_profile(request):
 
 # --- 1. The Landing Page (The "Artist Showcase") ---
 def landing_page(request):
-    # Fetch Success Stories (your milestones)
+    # Fetch Success Stories
     success_stories = SuccessStory.objects.all().order_by('-created_at')
     
     # Fetch Equipment (Resource type 'gear' or 'instrument')
     equipment = Resource.objects.filter(
         resource_type__in=['gear', 'instrument'], 
         status='available'
-    )[:6] # Limit to 6 so the page isn't too long
+    )[:6] 
     
     # Fetch Halls (Resource type 'hall')
     halls = Resource.objects.filter(
@@ -50,23 +55,45 @@ def landing_page(request):
     }
     
     return render(request, 'accounts/landing.html', context)
-# --- 2. The Success Story Detail Page ---
+
+# --- 2. The Talent Directory (ONLY SHOWS VERIFIED) ---
+def talent_directory(request):
+    """
+    Public directory that only displays vetted artists to ensure 
+    high-quality representation of the Hub.
+    """
+    # STAGE 2: Filter logic strictly ensures only is_vetted=True artists appear
+    vetted_artists = User.objects.filter(is_vetted=True, role='creative').order_by('-date_joined')
+    
+    # Simple search integration if needed later
+    search_query = request.GET.get('search')
+    if search_query:
+        vetted_artists = vetted_artists.filter(full_name__icontains=search_query)
+
+    return render(request, 'accounts/talent_directory.html', {
+        'artists': vetted_artists,
+        'page_title': 'Verified Hub Talent'
+    })
+
+# --- 3. The Success Story Detail Page ---
 def story_detail(request, story_id):
     story = get_object_or_404(SuccessStory, pk=story_id)
     return render(request, 'accounts/story_detail.html', {'story': story, 'page_title': f"{story.artist_name} | Story Detail"})
 
-# --- 3. The Signup Logic (The "Join the Hub" Action) ---
+# --- 4. The Signup Logic ---
 def signup(request):
     if request.method == 'POST':
         form = HubSignUpForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.role = 'creative'
+            # New users start unvetted by default
+            user.is_vetted = False 
             user.save()
              
             login(request, user)
-            messages.info(request, "Welcome to Sanaa-Sync! Your account is currently under review.")
-            return redirect('landing_page') 
+            messages.info(request, "Welcome! Complete your portfolio to get your 'Vetted' badge.")
+            return redirect('profile_view') 
     else:
         form = HubSignUpForm()
     

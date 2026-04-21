@@ -50,6 +50,11 @@ def book_multiple(request):
     # We fetch all available resources to display them in the form
     all_resources = Resource.objects.filter(status='available')
     
+    # Check if we are coming from a specific "Book Now" button
+    preselected_item = request.GET.get('item')
+    preselected_hall = request.GET.get('hall')
+    preselected_id = preselected_item or preselected_hall
+
     if request.method == 'POST':
         form = BookingForm(request.POST)
         if form.is_valid():
@@ -60,7 +65,11 @@ def book_multiple(request):
             # Simple Time Validation
             if booking.start_time >= booking.end_time:
                 messages.error(request, "End time must be after start time.")
-                return render(request, 'resources/booking_master_form.html', {'form': form, 'resources': all_resources})
+                return render(request, 'resources/booking_master_form.html', {
+                    'form': form, 
+                    'resources': all_resources,
+                    'preselected_id': preselected_id
+                })
 
             # 2. Extract quantities from the POST data
             items_to_create = []
@@ -84,14 +93,22 @@ def book_multiple(request):
                     
                     if (already_booked + qty) > resource.quantity:
                         messages.error(request, f"Sorry, only {resource.quantity - already_booked} units of {resource.name} are available for this time.")
-                        return render(request, 'resources/booking_master_form.html', {'form': form, 'resources': all_resources})
+                        return render(request, 'resources/booking_master_form.html', {
+                            'form': form, 
+                            'resources': all_resources,
+                            'preselected_id': preselected_id
+                        })
                     
                     # Prepare the item for saving
                     items_to_create.append(BookingItem(resource=resource, quantity_requested=qty))
 
             if not items_to_create:
                 messages.error(request, "You didn't select any items to book.")
-                return render(request, 'resources/booking_master_form.html', {'form': form, 'resources': all_resources})
+                return render(request, 'resources/booking_master_form.html', {
+                    'form': form, 
+                    'resources': all_resources,
+                    'preselected_id': preselected_id
+                })
 
             # 3. Everything is valid -> SAVE
             booking.save()
@@ -100,17 +117,18 @@ def book_multiple(request):
                 item.save()
             
             messages.success(request, "Master booking submitted! Wait for admin approval.")
-            return redirect('halls_list')
+            return redirect('my_bookings') # Redirecting to user's bookings makes more sense after submission
 
     else:
         form = BookingForm()
     
     return render(request, 'resources/booking_master_form.html', {
         'form': form, 
-        'resources': all_resources
+        'resources': all_resources,
+        'preselected_id': preselected_id # Use this in your template to auto-fill the qty input
     })
 
-# --- GIG LOGIC (Keep as is) ---
+# --- GIG LOGIC ---
 def gig_list(request):
     active_gigs = Gig.objects.filter(is_open=True).order_by('event_date')
     return render(request, 'resources/gig_list.html', {'gigs': active_gigs})
@@ -120,8 +138,8 @@ def apply_for_gig(request, gig_id):
     gig = get_object_or_404(Gig, id=gig_id)
     if request.method == 'POST':
         if not request.user.is_vetted:
-            messages.warning(request, "Profile must be vetted to apply.")
-            return redirect('gig_list')
+            messages.warning(request, "You must be a vetted artist to apply for gigs!")
+            return redirect('profile_view')
         form = GigApplicationForm(request.POST, request.FILES)
         if form.is_valid():
             application = form.save(commit=False)
@@ -129,7 +147,7 @@ def apply_for_gig(request, gig_id):
             application.artist = request.user
             application.save()
             messages.success(request, f"Application for {gig.title} sent.")
-            return redirect('profile')
+            return redirect('profile_view')
     else:
         form = GigApplicationForm()
     return render(request, 'resources/apply_confirm.html', {'gig': gig, 'form': form})
@@ -139,7 +157,6 @@ def apply_for_gig(request, gig_id):
 @login_required
 def my_bookings(request):
     """View to list bookings made by the current user."""
-    # Pre-fetch items and their associated resource to prevent N+1 queries
     bookings = Booking.objects.filter(user=request.user).order_by('-start_time').prefetch_related('items__resource')
     return render(request, 'resources/my_bookings.html', {'bookings': bookings})
 
@@ -149,8 +166,6 @@ def delete_booking(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id, user=request.user)
     
     if request.method == 'POST':
-        # Ensure only pending or certain bookings can be cancelled, or just allow deletion.
-        # It's safer to delete or set status to cancelled. We'll simply delete it per user request.
         booking.delete()
         messages.success(request, "Booking successfully deleted.")
         return redirect('my_bookings')

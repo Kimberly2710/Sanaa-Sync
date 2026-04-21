@@ -6,7 +6,7 @@
 <div style="background: #0a0a0a; min-height: 100vh; padding: 60px 20px; color: white;">
     <div style="max-width: 900px; margin: 0 auto;">
         
-        <header style="margin-bottom: 40px; border-left: 4px solid #007bff; padding-left: 20px;">
+        <header style="margin-bottom: 40px; border-left: 4px solid #0C6FBD; padding-left: 20px;">
             <h1 style="font-size: 2.5rem; font-weight: 800; letter-spacing: -2px; margin: 0;">RESERVE RESOURCES</h1>
             <p style="color: #888; margin-top: 5px;">Book multiple spaces and equipment for your event.</p>
         </header>
@@ -15,7 +15,7 @@
             {% csrf_token %}
 
             <section style="margin-bottom: 40px;">
-                <h3 style="font-size: 1rem; color: #007bff; text-transform: uppercase; margin-bottom: 20px;">1. Event Information</h3>
+                <h3 style="font-size: 1rem; color: #0C6FBD; text-transform: uppercase; margin-bottom: 20px;">1. Event Information</h3>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                     <div style="grid-column: span 2;">
                         {{ form.event_title.label_tag }}
@@ -33,7 +33,7 @@
             </section>
 
             <section style="margin-bottom: 40px;">
-                <h3 style="font-size: 1rem; color: #007bff; text-transform: uppercase; margin-bottom: 20px;">2. Select Quantities</h3>
+                <h3 style="font-size: 1rem; color: #0C6FBD; text-transform: uppercase; margin-bottom: 20px;">2. Select Quantities</h3>
                 <div style="border: 1px solid #222; border-radius: 8px; overflow: hidden;">
                     <table style="width: 100%; border-collapse: collapse; background: #0d0d0d;">
                         <thead>
@@ -46,13 +46,20 @@
                         </thead>
                         <tbody>
                             {% for resource in resources %}
-                            <tr style="border-top: 1px solid #222;">
-                                <td style="padding: 15px; font-weight: 600;">{{ resource.name }}</td>
+                            <tr style="border-top: 1px solid #222; {% if preselected_id == resource.id|stringformat:'s' %}background: rgba(12, 111, 189, 0.1); border-left: 4px solid #0C6FBD;{% endif %}">
+                                <td style="padding: 15px; font-weight: 600;">
+                                    {{ resource.name }}
+                                    {% if preselected_id == resource.id|stringformat:'s' %}
+                                        <span style="font-size: 9px; background: #0C6FBD; color: white; padding: 2px 6px; border-radius: 4px; margin-left: 10px; vertical-align: middle;">SELECTED</span>
+                                    {% endif %}
+                                </td>
                                 <td style="padding: 15px; color: #888; font-size: 0.8rem;">{{ resource.get_resource_type_display }}</td>
                                 <td style="padding: 15px; color: #888;">{{ resource.quantity }}</td>
                                 <td style="padding: 15px;">
-                                    <input type="number" name="qty_{{ resource.id }}" value="0" min="0" max="{{ resource.quantity }}" 
-                                           style="width: 70px; background: #000; border: 1px solid #333; color: #007bff; text-align: center; font-weight: bold;">
+                                    <input type="number" name="qty_{{ resource.id }}" 
+                                           value="{% if preselected_id == resource.id|stringformat:'s' %}1{% else %}0{% endif %}" 
+                                           min="0" max="{{ resource.quantity }}" 
+                                           style="width: 70px; background: #000; border: 1px solid {% if preselected_id == resource.id|stringformat:'s' %}#0C6FBD{% else %}#333{% endif %}; color: #0C6FBD; text-align: center; font-weight: bold;">
                                 </td>
                             </tr>
                             {% endfor %}
@@ -61,7 +68,7 @@
                 </div>
             </section>
 
-            <button type="submit" class="btn-sph" style="width: 100%; padding: 18px; font-size: 1rem; letter-spacing: 1px;">
+            <button type="submit" class="btn-sph" style="width: 100%; padding: 18px; font-size: 1rem; letter-spacing: 1px; background: #0C6FBD; color: white; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; transition: 0.3s;">
                 SUBMIT BOOKING REQUEST
             </button>
         </form>
@@ -71,8 +78,16 @@
 <style>
     /* Match the base styles */
     label { display: block; margin-bottom: 8px; font-size: 0.85rem; color: #aaa; font-weight: 600; }
-    input[type="text"], input[type="datetime-local"] {
+    input[type="text"], input[type="datetime-local"], select {
+        width: 100%;
+        padding: 12px;
+        background: #000;
+        border: 1px solid #333;
+        color: white;
+        border-radius: 6px;
         margin-bottom: 20px;
     }
+    input:focus { border-color: #0C6FBD; outline: none; }
+    .btn-sph:hover { background: #084d85 !important; transform: translateY(-2px); }
 </style>
 {% endblock %}

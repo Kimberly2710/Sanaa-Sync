@@ -16,13 +16,12 @@ class UserAdmin(BaseUserAdmin):
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
     
-    # These columns will be visible in the User List view
     list_display = ('username', 'email', 'first_name', 'role', 'is_vetted', 'is_staff')
     
-    # Allow filtering by these fields on the right side
-    list_filter = ('role', 'is_vetted', 'is_hub_staff', 'date_joined')
+    # ADD THIS LINE:
+    list_editable = ('is_vetted',) 
     
-    # Set 'creative' as the default view for the Dept. Head
+    list_filter = ('role', 'is_vetted', 'is_hub_staff', 'date_joined')
     ordering = ('-date_joined',)
 
 # 2. Make the skill mapping editable right from the User page

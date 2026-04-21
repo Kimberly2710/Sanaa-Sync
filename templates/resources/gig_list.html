@@ -23,7 +23,7 @@
                 <h3 style="margin: 0 0 15px 0; font-size: 1.4rem;">{{ gig.title }}</h3>
                 
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="color: #666; font-size: 0.8rem;">📍 {{ gig.location }}</span>
+                    <span style="color: #666; font-size: 0.8rem;"> {{ gig.location }}</span>
                     {% if user.is_authenticated %}
                         {% if user.is_vetted %}
                             <a href="{% url 'apply_for_gig' gig.id %}" style="background: #007bff; color: white; text-decoration: none; padding: 8px 18px; border-radius: 4px; font-weight: 600; font-size: 0.85rem;">Apply Now</a>
