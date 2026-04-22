@@ -88,6 +88,8 @@ class Gig(models.Model):
     location = models.CharField(max_length=255, default="Swahilipot Hub")
     slots_available = models.IntegerField(default=1)
     is_open = models.BooleanField(default=True)
+    requirements = models.TextField(help_text="What skills or gear do they need?", blank=True, null=True)
+    budget = models.DecimalField(max_digits=10, decimal_places=2, help_text="Amount in KES", default=0.00)
 
     def __str__(self):
         return self.title

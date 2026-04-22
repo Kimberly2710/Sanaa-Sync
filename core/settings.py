@@ -4,6 +4,10 @@ import pymysql
 from django.db.backends.base.base import BaseDatabaseWrapper
 from django.db.backends.mysql.features import DatabaseFeatures
 import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+
 
 # --- DATABASE & MARIADB FIXES ---
 pymysql.version_info = (2, 2, 1, 'final', 0)
@@ -18,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-smx)75o-+^et-#g%x3_qu#jwe!q8zxt6#0w3)8nqcth#2l^bmx'
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # --- APPS ---
 INSTALLED_APPS = [
@@ -120,3 +124,11 @@ cloudinary.config(
     api_secret = CLOUDINARY_STORAGE['API_SECRET'],
     secure = True
 )
+
+# Email Settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'tofina41@gmail.com'
+EMAIL_HOST_PASSWORD = 'vbakfcyysfqjymou'
